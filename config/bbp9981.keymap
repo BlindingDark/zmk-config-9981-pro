@@ -161,24 +161,24 @@
         upper_layer {
 
             bindings = <
-                 &kp F14                                                                                    &kp F15
-    &bt BT_SEL 0            &bt BT_SEL 1                                  &td0                              &bt BT_SEL 2                     &bt BT_SEL 3
-    &none        &kp UP     &kp C_EJECT &sys_reset      &ext_power EP_TOG &none            &kp LT           &kp GT          &kp PIPE         &kp KP_EQUAL
-    &kp LEFT     &kp DOWN   &kp RIGHT   &none           &kp BSLH          &kp AMPS         &kp LBRC         &kp RBRC        &kp CARET        &kp BSPC
-    &kp LSHFT    &none      &none       &rgb_ug RGB_BRD &bl BL_DEC        &rgb_ug RGB_TOG  &bl BL_INC       &rgb_ug RGB_BRI &none            &kp ENTER
-    &kp LCTRL               &kp LALT                                      &kp  SPACE                        &to DEFAULT                      &to DEFAULT
+                 &kp F14                                                                                      &kp F15
+    &none                   &none                                           &none                             &kp K_BACK                   &kp K_FORWARD
+    &none        &kp UP     &none       &none             &mt LBRC LT       &mt RBRC GT      &kp PIPE         &kp CARET       &kp PRCNT    &kp AMPS
+    &kp LEFT     &kp DOWN   &kp RIGHT   &none             &kp BSLH          &kp KP_EQUAL     &kp TILDE        &kp GRAVE       &none        &kp BSPC
+    &kp LSHFT    &none      &none       &none             &none             &none            &none            &none           &none        &kp ENTER
+    &kp LCTRL               &kp LALT                                        &kp  SPACE                        &to DEFAULT                  &to DEFAULT
             >;
         };
 
         media_layer {
 
             bindings = <
-                 &none                                                                                        &none
-    &none                  &none                               &td_boot_out                  &none                            &none
-    &none        &none     &none       &none      &none        &none         &none           &none           &none            &none
-    &none        &none     &none       &none      &none        &none         &none           &none           &none            &none
-    &none        &none     &none       &none      &none        &none         &none           &none           &to DEFAULT      &none
-    &none                  &none                               &none                         &to DEFAULT                      &to DEFAULT
+                 &none                                                                                             &none
+    &bt BT_SEL 0           &bt BT_SEL 1                                        &td0                                &bt BT_SEL 2                    &bt BT_SEL 3
+    &none        &none     &none       &sys_reset         &ext_power EP_TOG    &none             &none             &none           &none           &none
+    &none        &none     &none       &none              &none                &none             &none             &none           &none           &td_boot_out
+    &none        &none     &none       &rgb_ug RGB_BRD    &bl BL_DEC           &bl BL_INC        &rgb_ug RGB_BRI   &none           &to DEFAULT     &none
+    &none                  &none                                               &rgb_ug RGB_TOG                     &to DEFAULT                     &to DEFAULT
             >;
         };
     };
