@@ -25,6 +25,27 @@
     };
 
 / {
+    macros {
+        single_kp: single_kp {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&macro_param_1to1 &kp MACRO_PLACEHOLDER>;
+        };
+    };
+
+    behaviors {
+        ht_once: hold_tap_once {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <0>;
+            bindings = <&single_kp>, <&single_kp>;
+        };
+    };
+
     behaviors {
         td0: tap_dance_0 {
             compatible = "zmk,behavior-tap-dance";
@@ -100,27 +121,27 @@
         };
     };
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------
+// |    Shoulder Key1      |                                                                                       |    Shoulder Key2             |
+// |         Call key      |     Blackberry Key    |           Trackpad           |             Back Key           |         Endcall Key          |
+// |     Q      |     W    |     E     |     R     |      T      |       Y        |       U        |       I       |       O      |      P        |
+// |     A      |     S    |     D     |     F     |      G      |       H        |       J        |       K       |       L      |      ←        |
+// |     alt    |     Z    |     X     |     C     |      V      |       B        |       N        |       M       |       $      |    Enter      |
+// |            |     aA   |     0     |                          SPACE                            |       SYM     |       aA     |               |
+// |----------------------------------------------------------------------------------------------------------------------------------------------|
+
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
 
             bindings = <
-//         --------------------------------------------------------------------------------------------------------------------------         
-//         |    Shoulder Key1    |                                                                             |    Shoulder Key2    |     
-// |         Call key      |      Blackberry Key        |    Trackpad    |             Back Key                |             Endcall Key          |
-// |     Q      |     W    |     E    |     R    |      T      |       Y        |       U        |        I        |       O      |      P        |     
-// |     A      |     S    |     D    |     F    |      G      |       H        |       J        |        K        |       L      |      ←        |  
-// |     alt    |     Z    |     X    |     C    |      V      |       B        |       N        |        M        |       $      |    Enter      |   
-//        |         aA     |         0           |           SPACE              |         SYM         |        aA          |       
-//        -----------------------------------------------------------------------------------------------------------------
-
-                 &mkp LCLK                                                                                          &mkp RCLK
-    &kp CLCK                &kp LGUI                            &mkp LCLK                          &mt ESC K_BACK                    &mt F4 TAB
-    &kp Q        &kp W      &kp E       &kp R     &kp T         &kp Y             &kp U            &kp I            &kp O            &kp P
-    &kp A        &kp S      &kp D       &kp F     &kp G         &kp H             &kp J            &kp K            &kp L            &kp BSPC
-    &kp LSHFT    &kp Z      &kp X       &kp C     &kp V         &kp B             &kp N            &kp M            &tdc_to_SYM      &kp ENTER
-    &sk_kp LCTRL  LCTRL     &kp LALT                            &kp SPACE                          &sl_mo 1 1                        &sl_mo 2 2
+                  &mkp LCLK                                                                                         &mkp RCLK
+    &kp ESC                 &kp LGUI                            &mkp LCLK                          &mt K_BACK CLCK                   &ht_once LS(TAB) TAB
+    &kp Q         &kp W     &kp E       &kp R     &kp T         &kp Y             &kp U            &kp I            &kp O            &kp P
+    &kp A         &kp S     &kp D       &kp F     &kp G         &kp H             &kp J            &kp K            &kp L            &kp BSPC
+    &kp LSHFT     &kp Z     &kp X       &kp C     &kp V         &kp B             &kp N            &kp M            &tdc_to_SYM      &kp ENTER
+    &sk_kp LCTRL  LCTRL     &sl_mo 2 2                          &kp SPACE                          &sl_mo 1 1                        &kp LALT
             >;
         };
 
