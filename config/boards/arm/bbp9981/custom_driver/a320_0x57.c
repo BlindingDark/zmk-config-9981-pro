@@ -25,6 +25,25 @@
 
 LOG_MODULE_REGISTER(a320, CONFIG_A320_LOG_LEVEL);
 
+/* ==== A320 Sensor Configuration ==== */
+/* LED Power Register (0x0F): Controls LED illumination level (0x00-0xFF)
+ * Higher values improve finger detection but increase power consumption */
+#ifndef CONFIG_A320_LED_POWER
+#define CONFIG_A320_LED_POWER 0x60
+#endif
+
+/* Pixel Gain Register (0x2A): Controls sensor sensitivity (0x00-0x0F)
+ * Higher values increase sensitivity to low-reflection surfaces like skin */
+#ifndef CONFIG_A320_PIXEL_GAIN
+#define CONFIG_A320_PIXEL_GAIN 0x04
+#endif
+
+/* Motion Detection Threshold Register (0x32): Filters out noise
+ * Lower values detect smaller movements */
+#ifndef CONFIG_A320_MOTION_THRESHOLD
+#define CONFIG_A320_MOTION_THRESHOLD 0x08
+#endif
+
 /* ==== Detect HID indicators ==== */
 static zmk_hid_indicators_t current_indicators;
 #define HID_INDICATORS_CAPS_LOCK (1 << 1)
@@ -63,6 +82,7 @@ struct a320_data {
 
 static void a320_poll_work_handler(struct k_work *work);
 static int a320_read_motion(const struct device *dev, int16_t *dx, int16_t *dy);
+static int a320_configure_sensor(const struct device *dev);
 
 static bool ctrl_pressed = false;
 
@@ -198,7 +218,7 @@ static void a320_poll_work_handler(struct k_work *work) {
                     }
 
                     input_report_rel(dev, INPUT_REL_HWHEEL, -scroll_x, false, K_FOREVER);
-                    input_report_rel(dev, INPUT_REL_WHEEL, scroll_y, true, K_FOREVER);
+                    input_report_rel(dev, INPUT_REL_WHEEL, -scroll_y, true, K_FOREVER);
                 }
             }
         }
@@ -235,6 +255,53 @@ static int a320_read_motion(const struct device *dev, int16_t *dx, int16_t *dy) 
     return 0;
 }
 
+/* =========================
+ *   A320 Sensor Configuration
+ * ========================= */
+static int a320_configure_sensor(const struct device *dev) {
+    const struct a320_dev_config *cfg = dev->config;
+    int ret;
+
+    /* Configure LED Power (Register 0x0F)
+     * Controls the LED illumination level for better finger detection */
+    uint8_t led_power_cmd[] = {0x0F, CONFIG_A320_LED_POWER};
+    ret = i2c_write_dt(&cfg->i2c, led_power_cmd, sizeof(led_power_cmd));
+    if (ret < 0) {
+        LOG_ERR("Failed to configure LED power (0x0F): %d", ret);
+        return ret;
+    }
+    LOG_DBG("A320 LED power configured: 0x%02X", CONFIG_A320_LED_POWER);
+
+    k_msleep(5);
+
+    /* Configure Pixel Gain (Register 0x2A)
+     * Increases sensor sensitivity to low-reflection surfaces like skin */
+    uint8_t pixel_gain_cmd[] = {0x2A, CONFIG_A320_PIXEL_GAIN};
+    ret = i2c_write_dt(&cfg->i2c, pixel_gain_cmd, sizeof(pixel_gain_cmd));
+    if (ret < 0) {
+        LOG_ERR("Failed to configure pixel gain (0x2A): %d", ret);
+        return ret;
+    }
+    LOG_DBG("A320 pixel gain configured: 0x%02X", CONFIG_A320_PIXEL_GAIN);
+
+    k_msleep(5);
+
+    /* Configure Motion Threshold (Register 0x32)
+     * Filters noise while maintaining sensitivity to finger movement */
+    uint8_t motion_threshold_cmd[] = {0x32, CONFIG_A320_MOTION_THRESHOLD};
+    ret = i2c_write_dt(&cfg->i2c, motion_threshold_cmd, sizeof(motion_threshold_cmd));
+    if (ret < 0) {
+        LOG_ERR("Failed to configure motion threshold (0x32): %d", ret);
+        return ret;
+    }
+    LOG_DBG("A320 motion threshold configured: 0x%02X", CONFIG_A320_MOTION_THRESHOLD);
+
+    k_msleep(5);
+
+    LOG_INF("A320 sensor configuration complete");
+    return 0;
+}
+
 bool tp_is_touched(void) { return touched; }
 
 /* =========================
@@ -257,6 +324,12 @@ static int a320_init(const struct device *dev) {
         return -ENODEV;
     }
     gpio_pin_configure(motion_gpio_dev, MOTION_GPIO_PIN, GPIO_INPUT | GPIO_PULL_UP);
+
+    /* Configure A320 sensor for improved finger detection */
+    int ret = a320_configure_sensor(dev);
+    if (ret < 0) {
+        LOG_WRN("A320 sensor configuration warning: %d (may still work)", ret);
+    }
 
     data->dev = dev;
 

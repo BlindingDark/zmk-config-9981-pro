@@ -31,8 +31,8 @@ static const struct device *const led_dev = DEVICE_DT_GET(DT_CHOSEN(zmk_trackpad
 #define INDICATOR_LED_NUM_LEDS (DT_NUM_CHILD(DT_CHOSEN(zmk_trackpad_led)))
 
 #define BRT_MIN 10
-#define BRT_MAX 100
-#define BRT_LOW 20
+#define BRT_MAX 150
+#define BRT_LOW 30
 #define BRT_STEP 5
 
 #define ANIMATION_INTERVAL_MS 20
