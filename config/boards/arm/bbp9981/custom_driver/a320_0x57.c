@@ -39,9 +39,10 @@ LOG_MODULE_REGISTER(a320, CONFIG_A320_LOG_LEVEL);
 #endif
 
 /* Motion Detection Threshold Register (0x32): Filters out noise
- * Lower values detect smaller movements */
+ * Lower values detect smaller movements and weaker reflections (like skin)
+ * 0x02 provides good sensitivity for finger detection */
 #ifndef CONFIG_A320_MOTION_THRESHOLD
-#define CONFIG_A320_MOTION_THRESHOLD 0x08
+#define CONFIG_A320_MOTION_THRESHOLD 0x02
 #endif
 
 /* ==== Detect HID indicators ==== */
@@ -150,10 +151,11 @@ static void a320_poll_work_handler(struct k_work *work) {
                 dx = dx * 3 / 2 * tp_factor;
                 dy = dy * 3 / 2 * tp_factor;
 
-                input_report_rel(dev, INPUT_REL_X, dx, false, K_FOREVER);
-                input_report_rel(dev, INPUT_REL_Y, dy, true, K_FOREVER);
-
-                touched = true;
+                if (dx != 0 || dy != 0) {
+                    input_report_rel(dev, INPUT_REL_X, dx, false, K_FOREVER);
+                    input_report_rel(dev, INPUT_REL_Y, dy, true, K_FOREVER);
+                    touched = true;
+                }
             }
 
             /* === Scroll mode when CapsLock is on === */
@@ -270,7 +272,7 @@ static int a320_configure_sensor(const struct device *dev) {
         LOG_ERR("Failed to configure LED power (0x0F): %d", ret);
         return ret;
     }
-    LOG_DBG("A320 LED power configured: 0x%02X", CONFIG_A320_LED_POWER);
+    LOG_INF("A320 LED power configured: 0x%02X", CONFIG_A320_LED_POWER);
 
     k_msleep(5);
 
@@ -282,19 +284,19 @@ static int a320_configure_sensor(const struct device *dev) {
         LOG_ERR("Failed to configure pixel gain (0x2A): %d", ret);
         return ret;
     }
-    LOG_DBG("A320 pixel gain configured: 0x%02X", CONFIG_A320_PIXEL_GAIN);
+    LOG_INF("A320 pixel gain configured: 0x%02X", CONFIG_A320_PIXEL_GAIN);
 
     k_msleep(5);
 
     /* Configure Motion Threshold (Register 0x32)
-     * Filters noise while maintaining sensitivity to finger movement */
+     * Lower values improve sensitivity to weak reflections like fingerprints */
     uint8_t motion_threshold_cmd[] = {0x32, CONFIG_A320_MOTION_THRESHOLD};
     ret = i2c_write_dt(&cfg->i2c, motion_threshold_cmd, sizeof(motion_threshold_cmd));
     if (ret < 0) {
         LOG_ERR("Failed to configure motion threshold (0x32): %d", ret);
         return ret;
     }
-    LOG_DBG("A320 motion threshold configured: 0x%02X", CONFIG_A320_MOTION_THRESHOLD);
+    LOG_INF("A320 motion threshold configured: 0x%02X", CONFIG_A320_MOTION_THRESHOLD);
 
     k_msleep(5);
 
