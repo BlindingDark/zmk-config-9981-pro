@@ -138,7 +138,7 @@
 
             bindings = <
                           &mkp LCLK                                                                   &mkp RCLK
-    &kp ESC                              &sk_kp LGUI LGUI                     &to MOUSE               &kp CLCK                          &ht_once LS(TAB) TAB
+    &kp ESC                              &sk_kp LGUI LGUI                     &mkp LCLK               &kp CLCK                          &ht_once LS(TAB) TAB
     &kp Q                 &kp W          &kp E             &kp R     &kp T    &kp Y          &kp U    &kp I            &kp O            &kp P
     &kp A                 &kp S          &kp D             &kp F     &kp G    &kp H          &kp J    &kp K            &kp L            &kp BSPC
     &sk_kp LSHFT LSHFT    &kp Z          &kp X             &kp C     &kp V    &kp B          &kp N    &kp M            &sl_mo 3 3       &kp ENTER
@@ -151,7 +151,7 @@
 
             bindings = <        
                  &kp C_VOL_DN                                                                                         &kp C_VOL_UP
-    &kp PSCRN               &kp C_AC_SEARCH                       &none                              &kp K_BACK                        &kp K_FORWARD
+    &kp PSCRN               &kp C_AC_SEARCH                       &mkp MCLK                          &kp K_BACK                        &kp K_FORWARD
     &kp HASH     &kp N1     &kp N2      &kp N3    &mt LBKT LPAR   &mt RBKT RPAR     &kp UNDER        &kp MINUS        &kp PLUS         &kp AT
     &kp STAR     &kp N4     &kp N5      &kp N6    &kp SLASH       &kp COLON         &kp SEMI         &kp APOS         &kp DQT          &kp DEL
     &kp LSHFT    &kp N7     &kp N8      &kp N9    &kp QMARK       &kp EXCL          &kp COMMA        &kp DOT          &kp DLLR         &kp ENTER
@@ -163,7 +163,7 @@
 
             bindings = <
                    &kp F14                                                                       &kp F15
-    &none          &none                                           &none                         &kp K_BACK                  &kp K_FORWARD
+    &none          &none                                           &mkp MCLK                     &kp K_BACK                  &kp K_FORWARD
     &none          &kp F1     &kp F2          &kp F3  &mt LBRC LT  &mt RBRC GT      &kp PIPE     &kp CARET       &kp PRCNT   &kp AMPS
     &none          &kp F4     &kp F5          &kp F6  &kp BSLH     &kp KP_EQUAL     &kp TILDE    &kp GRAVE       &none       &kp DEL
     &kp LSHFT      &kp F7     &kp F8          &kp F9  &kp F10      &kp F11          &kp F12      &none           &none       &kp ENTER
@@ -174,12 +174,12 @@
         media_layer {
 
             bindings = <
-                 &none                                                                     &none
-    &bt BT_SEL 0           &bt BT_SEL 1                          &td0                      &bt BT_SEL 2                    &bt BT_SEL 3
-    &kp PG_UP    &kp UP    &kp PG_DN   &none    &none            &none             &none   &none           &sys_reset      &ext_power  EP_TOG
-    &kp LEFT     &kp DOWN  &kp RIGHT   &none    &rgb_ug RGB_BRD  &rgb_ug RGB_BRI   &none   &none           &none           &td_boot_out
-    &none        &none     &none       &none    &bl BL_DEC       &bl BL_INC        &none   &none           &to DEFAULT     &none
-    &none                  &none                                 &rgb_ug RGB_TOG           &to DEFAULT                     &to DEFAULT
+                      &none                                                                           &none
+    &bt BT_SEL 0                &bt BT_SEL 1                                &td0                      &bt BT_SEL 2                    &bt BT_SEL 3
+    &kp PG_UP         &kp UP    &kp PG_DN         &none    &none            &none             &none   &none           &sys_reset      &ext_power  EP_TOG
+    &kp LEFT          &kp DOWN  &kp RIGHT         &none    &rgb_ug RGB_BRD  &rgb_ug RGB_BRI   &none   &none           &none           &td_boot_out
+    &msc SCRL_LEFT    &none     &msc SCRL_RIGHT   &none    &bl BL_DEC       &bl BL_INC        &none   &none           &to DEFAULT     &none
+    &none                       &none                                       &rgb_ug RGB_TOG           &to DEFAULT                     &to DEFAULT
             >;
         };
 
